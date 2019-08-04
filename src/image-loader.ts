@@ -5,6 +5,7 @@ function createWorker(f: () => void) {
 const worker = createWorker(() => {
 	self.addEventListener('message', e => {
 		const src = e.data.src;
+		const useOffscreen = e.data.useOffscreen;
 
 		fetch(src, { mode: 'cors' })
 			.then(response => response.blob())
@@ -12,7 +13,7 @@ const worker = createWorker(() => {
 			.then(bitmap => {
 				let img;
 
-				if ("OffscreenCanvas" in window) {
+				if (useOffscreen) {
 					const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
 					const ctx = <any>canvas.getContext('2d') as CanvasRenderingContext2D;
 
@@ -30,7 +31,7 @@ const worker = createWorker(() => {
 	});
 });
 
-function loadImageWithWorker(src: string) {
+function loadImageWithWorker(src: string, useOffscreen: boolean) {
 	return new Promise((resolve, reject) => {
 		function handler(e: any) {
 			if (e.data.src === src) {
@@ -42,7 +43,7 @@ function loadImageWithWorker(src: string) {
 			}
 		}
 		worker.addEventListener('message', handler);
-		worker.postMessage({src});
+		worker.postMessage({src, useOffscreen});
 	});
 }
 
