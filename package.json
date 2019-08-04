@@ -1,8 +1,8 @@
 {
   "name": "@foxel_fox/glib",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "",
-  "main": "index.js",
+  "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc -p src/tsconfig.json"
