@@ -31,7 +31,7 @@ const worker = createWorker(() => {
 	});
 });
 
-function loadImageWithWorker(src: string, useOffscreen: boolean) {
+function loadImageWithWorker(src: string, useOffscreen: boolean): Promise<Uint8Array> {
 	return new Promise((resolve, reject) => {
 		function handler(e: any) {
 			if (e.data.src === src) {
