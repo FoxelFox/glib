@@ -5,25 +5,23 @@ function createWorker(f: () => void) {
 const worker = createWorker(() => {
 	self.addEventListener('message', e => {
 		const src = e.data.src;
-		const width = e.data.width;
-		const height = e.data.height;
 
 		fetch(src, { mode: 'cors' })
 			.then(response => response.blob())
 			.then(blob => createImageBitmap(blob))
 			.then(bitmap => {
-
 				let img;
 
 				if ("OffscreenCanvas" in window) {
-					const canvas = new OffscreenCanvas(width, height);
+					const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
 					const ctx = <any>canvas.getContext('2d') as CanvasRenderingContext2D;
+
 					ctx.drawImage(bitmap, 0, 0);
-					img = new Uint8Array(ctx.getImageData(0, 0, width, height).data);
+					img = new Uint8Array(ctx.getImageData(0, 0, bitmap.width, bitmap.height).data);
 				} else {
 					const ctx = (<any>document.getElementById("imgc")).getContext("2d");
 					ctx.drawImage(bitmap, 0, 0);
-					const imageData = ctx.getImageData(0, 0, width, height);
+					const imageData = ctx.getImageData(0, 0, bitmap.width, bitmap.height);
 					img = new Uint8Array(imageData.data);
 				}
 				// @ts-ignore
@@ -32,7 +30,7 @@ const worker = createWorker(() => {
 	});
 });
 
-function loadImageWithWorker(src: string, width: number, height: number, hasOffscreenCanvas: boolean) {
+function loadImageWithWorker(src: string) {
 	return new Promise((resolve, reject) => {
 		function handler(e: any) {
 			if (e.data.src === src) {
@@ -44,7 +42,7 @@ function loadImageWithWorker(src: string, width: number, height: number, hasOffs
 			}
 		}
 		worker.addEventListener('message', handler);
-		worker.postMessage({src, width, height});
+		worker.postMessage({src});
 	});
 }
 
