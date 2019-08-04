@@ -48,4 +48,4 @@ function loadImageWithWorker(src: string, width: number, height: number, hasOffs
 	});
 }
 
-export const loader = loadImageWithWorker;
+export const loadImageBuffer = loadImageWithWorker;
