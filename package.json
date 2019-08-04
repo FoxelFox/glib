@@ -1,0 +1,25 @@
+{
+  "name": "@foxel_fox/glib",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p src/tsconfig.json"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FoxelFox/glib.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FoxelFox/glib/issues"
+  },
+  "homepage": "https://github.com/FoxelFox/glib#readme",
+  "devDependencies": {
+    "typescript": "^3.5.3"
+  }
+}
