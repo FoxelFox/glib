@@ -19,13 +19,13 @@ const worker = createWorker(() => {
 
 					ctx.drawImage(bitmap, 0, 0);
 					img = new Uint8Array(ctx.getImageData(0, 0, bitmap.width, bitmap.height).data);
+					// @ts-ignore
+					self.postMessage({ src, img });
 				} else {
 					img = bitmap;
 					// @ts-ignore
 					self.postMessage({ src, img }, [img]);
 				}
-				// @ts-ignore
-				self.postMessage({ src, img });
 			});
 	});
 });
