@@ -30,12 +30,7 @@ const worker = createWorker(() => {
 	});
 });
 
-/**
- * Returns Uint8Array when Offscreen supported by browser otherwise CanvasImageSource
- * @param src Image URL
- * @param useOffscreen set true if browser supports OffscreenCanvas
- */
-function loadImageWithWorker(src: string, useOffscreen: boolean): Promise<Uint8Array | CanvasImageSource> {
+function loadImageWithWorker(src: string, useOffscreen: boolean): Promise<Uint8Array> {
 	return new Promise((resolve, reject) => {
 		function handler(e: any) {
 			if (e.data.src === src) {
@@ -43,7 +38,28 @@ function loadImageWithWorker(src: string, useOffscreen: boolean): Promise<Uint8A
 				if (e.data.error) {
 					reject(e.data.error);
 				}
-				resolve(e.data.img);
+
+				// for shit browsers but maybe it fails anyway ...
+				if (useOffscreen) {
+					resolve(e.data.img);
+				} else {
+					try {
+						const i = e.data.img as ImageBitmap;
+						const canvas = document.createElement("canvas");
+						canvas.width = i.width;
+						canvas.height = i.height;
+						const ctx = canvas.getContext("2d");
+
+						if (ctx) {
+							ctx.drawImage(i, 0, 0);
+							resolve(new Uint8Array(ctx.getImageData(0, 0, i.width, i.height).data));
+						} else {
+							reject("cant create canvas");
+						}
+					} catch (e) {
+						reject(e);
+					}
+				}
 			}
 		}
 		worker.addEventListener('message', handler);
