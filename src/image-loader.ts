@@ -20,10 +20,9 @@ const worker = createWorker(() => {
 					ctx.drawImage(bitmap, 0, 0);
 					img = new Uint8Array(ctx.getImageData(0, 0, bitmap.width, bitmap.height).data);
 				} else {
-					const ctx = (<any>document.getElementById("imgc")).getContext("2d");
-					ctx.drawImage(bitmap, 0, 0);
-					const imageData = ctx.getImageData(0, 0, bitmap.width, bitmap.height);
-					img = new Uint8Array(imageData.data);
+					img = bitmap;
+					// @ts-ignore
+					self.postMessage({ src, img }, [img]);
 				}
 				// @ts-ignore
 				self.postMessage({ src, img });
@@ -31,7 +30,12 @@ const worker = createWorker(() => {
 	});
 });
 
-function loadImageWithWorker(src: string, useOffscreen: boolean): Promise<Uint8Array> {
+/**
+ * Returns Uint8Array when Offscreen supported by browser otherwise CanvasImageSource
+ * @param src Image URL
+ * @param useOffscreen set true if browser supports OffscreenCanvas
+ */
+function loadImageWithWorker(src: string, useOffscreen: boolean): Promise<Uint8Array | CanvasImageSource> {
 	return new Promise((resolve, reject) => {
 		function handler(e: any) {
 			if (e.data.src === src) {
