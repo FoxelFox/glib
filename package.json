@@ -1,6 +1,6 @@
 {
   "name": "@foxel_fox/glib",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/FoxelFox/glib#readme",
   "devDependencies": {
+    "@types/webgl2": "0.0.5",
     "typescript": "^3.5.3"
   }
 }
