@@ -4,38 +4,40 @@ function createWorker(f: () => void) {
 
 let worker: Worker;
 
-if (Worker) {
-	worker = createWorker(() => {
-		self.addEventListener('message', e => {
-			const src = e.data.src;
-			const useOffscreen = e.data.useOffscreen;
-
-			fetch(src, { mode: 'cors' })
-				.then(response => response.blob())
-				.then(blob => createImageBitmap(blob))
-				.then(bitmap => {
-					let img;
-
-					if (useOffscreen) {
-						const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
-						const ctx = <any>canvas.getContext('2d') as CanvasRenderingContext2D;
-
-						ctx.drawImage(bitmap, 0, 0);
-						img = new Uint8Array(ctx.getImageData(0, 0, bitmap.width, bitmap.height).data);
-						// @ts-ignore
-						self.postMessage({ src, img });
-					} else {
-						img = bitmap;
-						// @ts-ignore
-						self.postMessage({ src, img }, [img]);
-					}
-				});
-		});
-	});
-}
 
 
 function loadImageWithWorker(src: string, useOffscreen: boolean): Promise<Uint8Array> {
+
+	if (!worker) {
+		worker = createWorker(() => {
+			self.addEventListener('message', e => {
+				const src = e.data.src;
+				const useOffscreen = e.data.useOffscreen;
+
+				fetch(src, { mode: 'cors' })
+					.then(response => response.blob())
+					.then(blob => createImageBitmap(blob))
+					.then(bitmap => {
+						let img;
+
+						if (useOffscreen) {
+							const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
+							const ctx = <any>canvas.getContext('2d') as CanvasRenderingContext2D;
+
+							ctx.drawImage(bitmap, 0, 0);
+							img = new Uint8Array(ctx.getImageData(0, 0, bitmap.width, bitmap.height).data);
+							// @ts-ignore
+							self.postMessage({ src, img });
+						} else {
+							img = bitmap;
+							// @ts-ignore
+							self.postMessage({ src, img }, [img]);
+						}
+					});
+			});
+		});
+	}
+
 	return new Promise((resolve, reject) => {
 		function handler(e: any) {
 			if (e.data.src === src) {
