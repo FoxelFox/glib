@@ -10,7 +10,10 @@ export abstract class SimpleNode {
 	vao: WebGLVertexArrayObject;
 	frameBuffer!: FrameBuffer;
 
-	protected constructor(public shader: Shader,public attributes: {[key: string]: ArrayBuffer | ArrayBufferNative}) {
+	protected constructor(
+		public shader: Shader,
+		public attributes: {[key: string]: ArrayBuffer | ArrayBufferNative}
+	) {
 		this.vao = gl.createVertexArray() as WebGLVertexArrayObject;
 
 		gl.bindVertexArray(this.vao);
