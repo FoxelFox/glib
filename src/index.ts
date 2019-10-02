@@ -1,6 +1,7 @@
 export {loadImageBuffer} from "./loader/image-loader"
 export {setContext} from "./context"
 export {ArrayBuffer} from "./data/array-buffer"
+export {ArrayBufferNative} from "./data/array-buffer-native"
 export {Quad} from "./data/quad"
 export {TextureArray} from "./data/texture-array"
 export {Texture} from "./data/texture"
