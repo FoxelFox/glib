@@ -3,13 +3,14 @@ import {Shader} from "../shader/shader";
 import {gl} from "../context";
 import {ArrayBuffer} from "../data/array-buffer";
 import {FrameBuffer} from "../data/frame-buffer";
+import {ArrayBufferNative} from "../data/array-buffer-native";
 
 export abstract class SimpleNode {
 
 	vao: WebGLVertexArrayObject;
 	frameBuffer!: FrameBuffer;
 
-	protected constructor(public shader: Shader,public attributes: {[key: string]: ArrayBuffer}) {
+	protected constructor(public shader: Shader,public attributes: {[key: string]: ArrayBuffer | ArrayBufferNative}) {
 		this.vao = gl.createVertexArray() as WebGLVertexArrayObject;
 
 		gl.bindVertexArray(this.vao);
