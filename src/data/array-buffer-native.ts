@@ -9,12 +9,10 @@ export class ArrayBufferNative {
 	normalize: boolean;
 	stride: number;
 	offset: number;
-	dataByteLength: number;
 
 	constructor(data: ArrayBuffer, dataByteLength: number, size: number, type: number, normalize?: boolean, stride?: number, offset?: number) {
 
 		this.rawData = data;
-		this.dataByteLength = dataByteLength;
 		this.size = size;
 		this.type = type;
 		this.normalize = !!normalize;
@@ -22,7 +20,7 @@ export class ArrayBufferNative {
 		this.offset = offset ? offset : 0;
 
 		this.buffer = gl.createBuffer() as WebGLBuffer;
-		this.updateBuffer(data);
+		this.updateBuffer(data, dataByteLength);
 	}
 
 	createArray(data: ArrayBuffer) {
@@ -34,10 +32,10 @@ export class ArrayBufferNative {
 		}
 	}
 
-	updateBuffer(data: ArrayBuffer) {
+	updateBuffer(data: ArrayBuffer, dataByteLength: number) {
 		this.rawData = data;
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-		gl.bufferData(gl.ARRAY_BUFFER, this.createArray(data), gl.STATIC_DRAW, 0, this.dataByteLength);
+		gl.bufferData(gl.ARRAY_BUFFER, this.createArray(data), gl.STATIC_DRAW, 0, dataByteLength);
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	}
 
